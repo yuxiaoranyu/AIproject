@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block bbb %}
+<style>
+#irisdiv{
+    margin: 50px auto;
+    width: 700px;
+}
+#linear_pred{
+    margin-top: 50px;
+    margin-bottom: 50px
+}
+#logic_pred{
+    margin-top: 50px;
+    margin-bottom: 50px
+}
+</style>
+<script>
+
+$(function(){
+
+
+
+    $("#logic_pred_button").click(function(){
+        var sex = $("#sex").val();
+        var alone = $("#alone").val();
+        var age = $("#age").val();
+        //var child = $("#child").val();
+        var fare = $("#fare").val();
+        var logic_select = $("#logic_select").val();
+        $.post("pred/",
+            {
+                csrfmiddlewaretoken:'{{csrf_token}}',
+                sex:sex,
+                age:age,
+                fare:fare,
+                alone:alone,
+                logic_select:logic_select,
+            },
+            function(data,status){
+                console.log(data);
+                $("#logic_result").html(data.msg+"<br>"+data.acc);//text()
+            }
+        );
+
+    });
+
+
+})
+</script>
+<body>
+<div id=irisdiv>
+<center><h1>泰坦尼克号生存预测</h1> <span><a href="/titanic/index2/">泰坦尼克号生存预测<span style="color: #e41635">升级版</span></a></span></center>
+
+<form action="#" method="get">
+
+<hr>
+<div id=logic_pred>
+
+    <div>性别：
+            <select name="sex" id="sex">
+                    <option value="male">男</option>
+                    <option value="female">女</option>
+            </select>
+
+
+
+            <br>年龄：<input type="text" name="age" id="age">
+            <!--<br>儿童：<input type="text" name="child" id="child" disabled>-->
+            <br>费用：<input type="text" name="fare" id="fare">
+
+    </div>
+    <div>独身：
+    <select name="alone" id="alone">
+                    <option value="1">是</option>
+                    <option value="0">否</option>
+            </select>
+    </div>
+    <label for="logic_select">选择逻辑分类算法</label>
+    <select name="logic_select" id="logic_select">
+            <option value="KNN">KNN</option>
+            <option value="LogicRegression">逻辑回归</option>
+            <option value="DecisionTree">决策树</option>
+            <option value="RandomForest">随机森林</option>
+            <option value="SVM">支持向量机</option>
+            <option value="KMeans">KMeans聚类</option>
+            <option value="Bagging">Bagging</option>
+            <option value="Adaboost">AdaBoost</option>
+    </select>
+    <br><input type="button" value="预测" id=logic_pred_button>
+    <br><div id=logic_result></div>
+</div>
+
+</form>
+</div>
+</body>
+
+{% endblock %}
+
+

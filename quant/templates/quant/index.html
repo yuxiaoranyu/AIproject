@@ -1,0 +1,332 @@
+{% extends "base.html" %}
+
+{% block bbb %}
+    <style>
+
+        #quant_div {
+            margin: 20px auto;
+            height: 800px;
+            width: 900px;
+        }
+
+        #stock_set {
+            margin: 20px auto;
+            width: 500px;
+        }
+
+        #irisdiv {
+            margin: 50px auto;
+            width: 700px;
+        }
+
+        #linear_pred {
+            margin-top: 50px;
+            margin-bottom: 50px
+        }
+
+        #logic_pred {
+            margin-top: 50px;
+            margin-bottom: 50px
+        }
+
+        #rent_pred {
+            margin: 20px auto;
+            height: 500px;
+            width: 500px;
+        }
+
+        div {
+            margin-top: 10px;
+        }
+
+        #loading {
+            width: 170px;
+            height: 25px;
+            border: 1px solid red;
+            position: absolute;
+            top: 300px;
+            left: 600px;
+            z-index: 100;
+            display: none;
+
+        }
+
+        #quant_back {
+            display: none;
+            margin: 20px auto;
+            width: 500px;
+        }
+
+        #stock_data {
+            display: none;
+            margin: 20px auto;
+            width: 500px;
+        }
+
+        #real_info {
+            margin: 20px auto;
+            width: 500px;
+        }
+    </style>
+    <script>
+        $(function () {
+
+
+            function time_get_real() {
+                $.ajax({
+                    async: true,
+                    beforeSend: function () {
+                        //showDiv();
+                    },
+                    complete: function () {
+                        //HiddenDiv()
+                    },
+                    type: "POST",
+                    url: "setcode/",
+                    data: {
+                        csrfmiddlewaretoken: '{{csrf_token}}',
+                        code: $("#code").val()
+                    },
+                    success: function (data) {
+                        //console.log(data);
+                        $("#real_info").html(data.msg);
+                    }
+                });
+            }
+
+            $("#set_code").click(function () {
+                setInterval(time_get_real, 2000)
+            });
+
+
+            $("#catch").click(function () {
+                var start_time = $("#start_time").val()
+                console.log(start_time)
+
+                var end_time = $("#end_time").val()
+
+                $.ajax({
+                    async: true,
+                    beforeSend: function () {
+                        showDiv();
+                    },
+                    complete: function () {
+                        HiddenDiv()
+                    },
+                    type: "POST",
+                    url: "catch/",
+                    data: {
+                        csrfmiddlewaretoken: '{{csrf_token}}',
+                        catch_code: $("#catch_code").val(),
+                        start_time: start_time,
+                        end_time: end_time
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        $("#pred_info").html(data.msg);
+                    }
+                })
+
+            });
+
+            $("#out").click(function () {
+
+                $.ajax({
+                    async: true,
+                    beforeSend: function () {
+                        showDiv();
+                    },
+                    complete: function () {
+                        HiddenDiv()
+                    },
+                    type: "POST",
+                    url: "outcsv/",
+                    data: {
+                        csrfmiddlewaretoken: '{{csrf_token}}',
+                        catch_code: $("#catch_code").val(),
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        $("#pred_info").html(data.msg);
+                    }
+                })
+
+            });
+
+            $("#do").click(function () {
+
+                $.ajax({
+                    async: true,
+                    beforeSend: function () {
+                        showDiv();
+                    },
+                    complete: function () {
+                        HiddenDiv()
+                    },
+                    type: "POST",
+                    url: "dodata/",
+                    data: {
+                        csrfmiddlewaretoken: '{{csrf_token}}',
+                        catch_code: $("#catch_code").val(),
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        $("#pred_info").html(data.msg);
+                    }
+                })
+
+            });
+
+
+            $("#logic_pred_button").click(function () {
+
+                var logic_select = $("#logic_select").val();
+                $.ajax({
+                    async: true,
+                    beforeSend: function () {
+                        showDiv();
+                    },
+                    complete: function () {
+                        HiddenDiv()
+                    },
+                    type: "POST",
+                    url: "pred/",
+                    data: {
+                        csrfmiddlewaretoken: '{{csrf_token}}',
+                        catch_code: $("#catch_code").val(),
+                        logic_select: logic_select
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        $("#pred_info").html(data.msg);//text()
+                        $("#quant_back").show();
+                    }
+                })
+
+            });
+
+            $("#back_button").click(function () {
+                var logic_select = $("#logic_select").val();
+                var quant_select = $("#quant_select").val();
+                $.ajax({
+                    async: true,
+                    beforeSend: function () {
+                        showDiv();
+                    },
+                    complete: function () {
+                        HiddenDiv()
+                    },
+                    type: "POST",
+                    url: "back/",
+                    data: {
+                        csrfmiddlewaretoken: '{{csrf_token}}',
+                        catch_code: $("#catch_code").val(),
+                        quant_select: quant_select,
+                        logic_select: logic_select
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        $("#back_info").html(data.msg);//text()
+
+                    }
+                })
+
+            });
+
+            function showDiv() {
+                $("#loading").show()
+            }
+
+            function HiddenDiv() {
+                $("#loading").hide()
+            }
+
+
+        })
+    </script>
+    <body>
+    <div id=quant_div>
+        <center><h1>股票量化交易系统</h1></center>
+        <form action="#" method="get">
+
+            <hr>
+            <div id=logic_pred>
+                <div id=stock_set>
+                    <div>输入股票代码：</div>
+                    <div>
+                        <input type="text" name="code" id="code" style="width:300px;">
+                    </div>
+
+                    <div>
+                        <input type="button" name="set_code" id="set_code" value="设置">
+                    </div>
+
+
+                </div>
+                <div id=real_info>
+
+                </div>
+
+                <div id=stock_data>
+                    <div>开始时间：</div>
+                    <div><input type="date" id=start_time name=start_time></div>
+                    <br>
+                    <div>结束时间：</div>
+                    <div><input type="date" id=end_time name=end_time></div>
+                    <br>
+                    <input type="button" value="获取数据" id=catch name=catch>
+                    <input type="button" value="导出数据" id=out name=out>
+                    <input type="button" value="加工数据" id=do name=do>
+
+                    <input type="hidden" name="catch_code" id="catch_code" style="width:300px;">
+
+                    <div>选择算法</div>
+                    <div>
+                        <select name="logic_select" id="logic_select">
+                            <option value="LinearRegression">线性回归</option>
+                            <option value="SVR">SVR</option>
+                        </select>
+                    </div>
+                    <input type="button" value="预测" id=logic_pred_button>
+                    <div id=pred_info>
+
+                    </div>
+                </div>
+
+                <div id=quant_back>
+                    <div>交易策略：</div>
+                    <select name="quant_select" id="quant_select">
+                        <option value="daily">日内</option>
+                        <option value="id_">日间</option>
+                        <option value="overnight">隔夜</option>
+                        <option value="custom_">自定义策略</option>
+                    </select>
+                    <input type="button" value="回测" id=back_button>
+                    <div id=back_info>
+
+                    </div>
+                </div>
+
+
+                <div id=loading>
+                    <img src="/static/loading.gif" alt="">正在加载数据，请稍候...
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+    <script>
+        function quantAction(i) {
+            $("#stock_data").show();
+            var codes = $("#code").val();
+            var codes_arr = codes.split(" ");
+            var choose_code = codes_arr[i];
+            //$("#pred_info").html(choose_code);
+            $("#catch_code").val(choose_code);
+
+        }
+    </script>
+    </body>
+
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block bbb %}
+    <style>
+#irisdiv{
+    margin: 50px auto;
+    width: 700px;
+}
+#linear_pred{
+    margin-top: 50px;
+    margin-bottom: 50px
+}
+#logic_pred{
+    margin-top: 50px;
+    margin-bottom: 50px
+}
+</style>
+<script>
+
+$(function(){
+
+    $("#linear_pred_button").click(function(){
+        var petal_width = $("#petal_width").val();
+        var linear_select = $("#linear_select").val();
+        $.post("linear_pred/",
+            {
+                csrfmiddlewaretoken:'{{csrf_token}}',
+                petal_width:petal_width,
+                linear_select:linear_select,
+            },
+            function(data,status){
+                $("#linear_result").html(data.msg)//text()
+            }
+        );
+
+    });
+
+    $("#logic_pred_button").click(function(){
+        var petal_width2 = $("#petal_width2").val();
+        var petal_length = $("#petal_length").val();
+        var sepal_width = $("#sepal_width").val();
+        var sepal_length = $("#sepal_length").val();
+        var logic_select = $("#logic_select").val();
+        $.post("pred/",
+            {
+                csrfmiddlewaretoken:'{{csrf_token}}',
+                petal_width2:petal_width2,
+                petal_length:petal_length,
+                sepal_width:sepal_width,
+                sepal_length:sepal_length,
+                logic_select:logic_select,
+
+            },
+            function(data,status){
+                $("#logic_result").html(data.msg+"<br>"+data.acc)//text()
+            }
+        );
+
+    });
+
+
+})
+</script>
+<body>
+<div id=irisdiv>
+<center><h1>花预测系统</h1></center>
+<form action="#" method="get">
+<div id=linear_pred>
+<div>
+    线性预测
+</div>
+<div>
+    <br>花瓣宽度：<input type="text" name="petal_width" id="petal_width">
+    <br>
+    <label for="linear_select">选择线性回归算法</span>
+    <select name="linear_select" id="linear_select">
+        <option value="LinearRegression">线性回归</option>
+        <option value="PolyRegression">多项式回归</option>
+    </select>
+    <br><input type="button" value="预测" id=linear_pred_button>
+    <br><div id=linear_result></div>
+</div>
+</div>
+<hr>
+<div id=logic_pred>
+    <div>分类预测</div>
+    <div>
+            <br>花萼长度：<input type="text" name="sepal_length" id="sepal_length">
+            <br>花萼宽度：<input type="text" name="sepal_width" id="sepal_width">
+            <br>花瓣长度：<input type="text" name="petal_length" id="petal_length">
+            <br>花瓣宽度：<input type="text" name="petal_width2" id="petal_width2">
+
+
+    </div>
+    <label for="logic_select">选择逻辑分类算法</label>
+    <select name="logic_select" id="logic_select">
+            <option value="KNN">KNN</option>
+            <option value="LogicRegression">逻辑回归</option>
+            <option value="DecisionTree">决策树</option>
+            <option value="RandomForest">随机森林</option>
+            <option value="SVM">支持向量机</option>
+            <option value="KMeans">KMeans聚类</option>
+    </select>
+    <br><input type="button" value="预测" id=logic_pred_button>
+    <br><div id=logic_result></div>
+</div>
+
+</form>
+</div>
+</body>
+{% endblock %}
+
+

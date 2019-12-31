@@ -1,0 +1,279 @@
+{% extends "base.html" %}
+
+{% block bbb %}
+    <style>
+
+        #rent_div {
+            margin: 20px auto;
+            height: 800px;
+            width: 900px;
+        }
+
+        #fun_button {
+            margin: 20px auto;
+            width: 500px;
+        }
+
+        #irisdiv {
+            margin: 50px auto;
+            width: 700px;
+        }
+
+        #linear_pred {
+            margin-top: 50px;
+            margin-bottom: 50px
+        }
+
+        #logic_pred {
+            margin-top: 50px;
+            margin-bottom: 50px
+        }
+
+        #rent_pred {
+            margin: 20px auto;
+            height: 500px;
+            width: 500px;
+        }
+
+        div {
+            margin-top: 10px;
+        }
+
+        #loading {
+            width: 170px;
+            height: 25px;
+            border: 1px solid red;
+            position: absolute;
+            top: 300px;
+            left: 600px;
+            z-index: 100;
+            display: none;
+
+        }
+    </style>
+    <script>
+
+        $(function () {
+
+            $("#catch").click(function () {
+
+                $.ajax({
+                    async: true,
+                    beforeSend: function () {
+                        showDiv();
+                    },
+                    complete: function () {
+                        HiddenDiv()
+                    },
+                    type: "POST",
+                    url: "catch/",
+                    data: {
+                        csrfmiddlewaretoken: '{{csrf_token}}',
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        $("#data_result").html("信息获取数量：" + data.msg);
+                    }
+                })
+
+            });
+
+            $("#out").click(function () {
+
+                $.ajax({
+                    async: true,
+                    beforeSend: function () {
+                        showDiv();
+                    },
+                    complete: function () {
+                        HiddenDiv()
+                    },
+                    type: "POST",
+                    url: "outcsv/",
+                    data: {
+                        csrfmiddlewaretoken: '{{csrf_token}}',
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        $("#data_result").html(data.msg);
+                    }
+                })
+
+            });
+
+            $("#do").click(function () {
+
+                $.ajax({
+                    async: true,
+                    beforeSend: function () {
+                        showDiv();
+                    },
+                    complete: function () {
+                        HiddenDiv()
+                    },
+                    type: "POST",
+                    url: "do_data/",
+                    data: {
+                        csrfmiddlewaretoken: '{{csrf_token}}',
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        $("#data_result").html(data.msg);
+                    }
+                })
+
+            });
+
+
+            $("#logic_pred_button").click(function () {
+                var positionInfo = $("#positionInfo").val();
+                var renovation = $("#renovation").val();
+                var area = $("#area").val();
+                var beds = $("#beds").val();
+                //var child = $("#child").val();
+                var rooms = $("#rooms").val();
+                var title = $("#title").val();
+                var toward = $("#toward").val();
+                var price_select = $("#price_select").val();
+                var logic_select = $("#logic_select").val();
+                $.ajax({
+                    async: true,
+                    beforeSend: function () {
+                        showDiv();
+                    },
+                    complete: function () {
+                        HiddenDiv()
+                    },
+                    type: "POST",
+                    url: "pred/",
+                    data: {
+                        csrfmiddlewaretoken: '{{csrf_token}}',
+                        positionInfo: positionInfo,
+                        renovation: renovation,
+                        area: area,
+                        beds: beds,
+                        rooms: rooms,
+                        title: title,
+                        toward: toward,
+                        price_select: price_select,
+                        logic_select: logic_select
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        $("#pred_result").html(data.msg + "<br>" + data.acc);//text()
+                    }
+                })
+
+            });
+
+            function showDiv() {
+                $("#loading").show()
+            }
+
+            function HiddenDiv() {
+                $("#loading").hide()
+            }
+
+
+        })
+    </script>
+    <body>
+    <div id=rent_div>
+        <center><h1>广州房屋价格预测系统</h1></center>
+        <form action="#" method="get">
+
+            <hr>
+            <div id=logic_pred>
+                <div id=fun_button>
+                    <div id=data_result></div>
+                    <br><input type="button" value="爬取数据" id=catch name=catch>
+                    <input type="button" value="导出数据" id=out name=out>
+                    <input type="button" value="加工数据" id=do name=do>
+
+                </div>
+
+
+                <div id=rent_pred>
+                    <div>区域：</div>
+                    <div>
+                        <select name="title" id="title">
+                            <option value="tianhe">天河区</option>
+                            <option value="yuexiu">越秀区</option>
+                            <option value="liwan">荔湾区</option>
+                            <option value="haizhu">海珠区</option>
+                            <option value="panyu">番禺区</option>
+                            <option value="huangpu">黄埔区</option>
+                            <option value="baiyun">白云区</option>
+                            <option value="nansha">南沙区</option>
+                            <option value="nanhai">南海区</option>
+                            <option value="conghua">从化区</option>
+                            <option value="huadu">花都区</option>
+                            <option value="zengcheng">增城区</option>
+                            <option value="shunde">顺德区</option>
+                        </select>
+                    </div>
+                    <div>楼层：</div>
+                    <div><input type="text" name="positionInfo" id="positionInfo"></div>
+                    <div>面积：</div>
+                    <div><input type="text" name="area" id="area"></div>
+
+                    <div>室：</div>
+                    <div><input type="text" name="beds" id="beds"></div>
+                    <div>厅：</div>
+                    <div><input type="text" name="rooms" id="rooms"></div>
+                    <div>方向：</div>
+                    <div>
+                        <select name="toward" id="toward">
+                            <option value="east">东</option>
+                            <option value="south">南</option>
+                            <option value="west">西</option>
+                            <option value="north">北</option>
+                        </select>
+                    </div>
+                    <div>装修风格：</div>
+                    <div>
+                        <select name="renovation" id="renovation">
+                            <option value="1">精装</option>
+                            <option value="0">简装</option>
+                            <option value="-1">毛坯</option>
+                        </select>
+                    </div>
+                    <div>选择算法</div>
+                    <div>
+                        <select name="logic_select" id="logic_select">
+                            <option value="LinearRegression">线性回归</option>
+                            <option value="PolyRegression">多项式回归</option>
+                            <option value="DecisionTree">决策树</option>
+                            <option value="SVR">SVR</option>
+                            <option value="Bagging">集成算法</option>
+                        </select>
+
+                    </div>
+                    <div>预测类型</div>
+                    <div>
+                        <select name="price_select" id="price_select">
+                            <option value="total">总价</option>
+                            <option value="unit">单价</option>
+                        </select>
+                    </div>
+                    <div>
+                        <input type="button" value="预测" id=logic_pred_button>
+                    </div>
+
+                    <div id=pred_result></div>
+
+                </div>
+
+                <div id=loading>
+                    <img src="/static/loading.gif" alt="">正在加载数据，请稍候...
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+    </body>
+
+{% endblock %}
+
+

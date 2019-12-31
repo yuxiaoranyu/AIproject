@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block bbb %}
+<style>
+#irisdiv{
+    margin: 50px auto;
+    width: 700px;
+}
+#linear_pred{
+    margin-top: 50px;
+    margin-bottom: 50px
+}
+#logic_pred{
+    margin-top: 50px;
+    margin-bottom: 50px
+}
+</style>
+<script>
+
+$(function(){
+
+
+
+    $("#logic_pred_button").click(function(){
+        var sex = $("#sex").val();
+        var initial = $("#initial").val();
+        var age = $("#age").val();
+        var sibsp = $("#sibsp").val();
+        var parch = $("#parch").val();
+        var fare = $("#fare").val();
+        var embarked = $("#embarked").val();
+        var pclass = $("#pclass").val();
+        var logic_select = $("#logic_select").val();
+        $.post("/titanic/pred2/",
+            {
+                csrfmiddlewaretoken:'{{csrf_token}}',
+                sex:sex,
+                initial:initial,
+                age:age,
+                sibsp:sibsp,
+                parch:parch,
+                fare:fare,
+                embarked:embarked,
+                pclass:pclass,
+                logic_select:logic_select,
+            },
+            function(data,status){
+                console.log(data);
+                $("#logic_result").html(data.msg+"<br>"+data.acc);//text()
+            }
+        );
+
+    });
+
+
+})
+</script>
+<body>
+
+<div id=irisdiv>
+<center><h1>泰坦尼克号生存预测<span style="color: #e41635">升级版</span></h1></center>
+<form action="#" method="get">
+
+<hr>
+<div id=logic_pred>
+
+    <div>性别：
+            <select name="sex" id="sex">
+                    <option value="0">男</option>
+                    <option value="1">女</option>
+            </select>
+            <br>年龄：<input type="text" name="age" id="age">
+            <br>兄妹个数：<input type="sibsp" name="sibsp" id="sibsp">
+            <br>父母个数：<input type="parch" name="parch" id="parch">
+            <br>票价：<input type="text" name="fare" id="fare">
+
+    </div>
+
+    <div>身份：
+        <select name="initial" id="initial">
+                    <option value="0">小主人</option>
+                    <option value="1">路人甲</option>
+                    <option value="2">美少女</option>
+                    <option value="3">少妇</option>
+                    <option value="4">美男子</option>
+            </select>
+    </div>
+    <div>登录地：
+    <select name="embarked" id="embarked">
+                    <option value="0">Q</option>
+                    <option value="1">S</option>
+                    <option value="2">C</option>
+            </select>
+    </div>
+    <div>Pclass：
+    <select name="pclass" id="pclass">
+                    <option value="3">二等座</option>
+                    <option value="2">一等座</option>
+                    <option value="1">商务座</option>
+            </select>
+    </div>
+    <label for="logic_select">选择逻辑分类算法</label>
+    <select name="logic_select" id="logic_select">
+            <option value="KNN">KNN</option>
+            <option value="LogicRegression">逻辑回归</option>
+            <option value="DecisionTree">决策树</option>
+            <option value="RandomForest">随机森林</option>
+            <option value="SVM">支持向量机</option>
+            <option value="KMeans">KMeans聚类</option>
+            <option value="Bagging">Bagging</option>
+            <option value="Adaboost">AdaBoost</option>
+    </select>
+    <br><input type="button" value="预测" id=logic_pred_button>
+    <br><div id=logic_result></div>
+</div>
+
+</form>
+</div>
+</body>
+
+{% endblock %}
+
+

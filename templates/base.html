@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
+    <title>主页</title>
+    <style>.banner {
+        background: url(/static/banner.jpg) no-repeat center;
+        height: 290px;
+        margin: 10px auto;
+        width: 100%;
+        font-size: 16px;
+        font-family: "Microsoft Yahei", Arial, Helvetica, sans-serif;
+    }
+
+    .texts {
+        line-height: 36px;
+        padding: 90px 0 0 40px;
+        text-shadow: 1px 1px rgba(255, 255, 255, 0.3);
+    }
+
+    .texts p {
+        -webkit-transition: all 1s;
+        -moz-transition: all 1s;
+        -o-transition: all 1s;
+        transition: all 1s;
+        -webkit-transform: translate(60px);
+        -moz-transform: translate(60px);
+        -o-transform: translate(60px);
+        -ms-transform: translate(60px);
+        transform: translate(60px);
+    }
+
+    .texts p:hover {
+        padding-left: 20px
+    }
+
+    .texts p:nth-child(1) {
+        -webkit-animation: animations 3s ease-out 1s backwards;
+        -moz-animation: animations 3s ease-out 1s backwards;
+        -o-animation: animations 3s ease-out 1s backwards;
+        -ms-animation: animations 3s ease-out 1s backwards;
+        animation: animations 3s ease-out 1s backwards;
+    }
+
+    .texts p:nth-child(2) {
+        -webkit-animation: animations 3s ease-out 4s backwards;
+        -moz-animation: animations 3s ease-out 4s backwards;
+        -o-animation: animations 3s ease-out 4s backwards;
+        -ms-animation: animations 3s ease-out 4s backwards;
+        animation: animations 3s ease-out 4s backwards;
+    }
+
+    nav {
+        background: rgba(0, 0, 0, 0.8);
+        height: 48px;
+        line-height: 48px;
+        padding-left: 80px;
+        filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr=#3333333, endColorstr=#3333333);
+    }
+
+    nav a {
+        display: inline-block;
+        font-size: 18px;
+        font-family: "Microsoft Yahei", Arial, Helvetica, sans-serif;
+        color: #FFF;
+        padding: 0 20px;
+        -webkit-transition: all 1s;
+        -moz-transition: all 1s;
+        -o-transition: all 1s;
+        transition: all 1s;
+    }
+
+    nav a:hover {
+        background: #e41635;
+    }
+
+    a {
+        outline: none;
+    }
+
+    a:link, a:visited {
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: none;
+    }
+    </style>
+
+</head>
+
+
+<bbb>
+<div class="ibody">
+    <nav id="topnav">
+        <a href="/">首页</a>
+        <a href="/titanic/">泰坦尼克号获救预测</a>
+        <a href="/mnist/">mnist字体识别系统</a>
+        <a href="/face/">人脸识别系统</a>
+        <a href="/iris/">鸢尾花预测系统</a>
+        <a href="/rent/">广州二手房价预测系统</a>
+        <a href="/quant/">量化交易平台</a>
+        <a href="/catdog/">猫狗识别</a>
+    </nav>
+</div>
+
+{% block bbb %}
+
+{% endblock %}
+
+
+
+</bbb>
+

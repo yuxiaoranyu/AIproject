@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block bbb %}
+    <style>
+        #irisdiv {
+            margin: 50px auto;
+            width: 700px;
+        }
+
+        #linear_pred {
+            margin-top: 50px;
+            margin-bottom: 50px
+        }
+
+        #logic_pred {
+            margin-top: 50px;
+            margin-bottom: 50px
+        }
+    </style>
+    <script>
+
+        $(function () {
+
+
+            $("#logic_pred_button").click(function () {
+                var file_path = $("#file_path").val();
+                var pca = $("#pca").val();
+
+                var logic_select = $("#logic_select").val();
+                $.post("pred/",
+                    {
+                        csrfmiddlewaretoken: '{{csrf_token}}',
+                        file_path: file_path,
+                        pca: pca,
+
+                        logic_select: logic_select,
+
+                    },
+                    function (data, status) {
+                        $("#logic_result").html(data.msg + "<br>" + data.acc)//text()
+                    }
+                );
+
+            });
+
+
+        })
+    </script>
+    <body>
+    <div id=irisdiv>
+        <center><h1>人脸识别系统</h1></center>
+        <form action="#" method="get">
+            <div id=linear_pred>
+                <div id=face_img>
+
+                </div>
+                <div>
+                    <form method="post" action="/upload/" enctype="multipart/form-data">
+                        <br><input type="hidden" name="file_path" id="file_path">
+                        <br><input id='img' type="file" name="img"/>
+                        <br><br>
+                        <input type="button" value="图像上传" onclick="uploadFile2();">
+
+                        <br><br>降维：<input id="pca" type="text" name="pca" value="150"/>
+
+                        <br><br><label for="logic_select">选择人脸识别算法</label>
+                        <br><select name="logic_select" id="logic_select">
+                        <option value="KNN">KNN</option>
+                        <option value="LogicRegression">逻辑回归</option>
+                        <option value="DecisionTree">决策树</option>
+                        <option value="RandomForest">随机森林</option>
+                        <option value="SVM">支持向量机</option>
+                        <option value="ENSEMBLE">集成算法</option>
+                        <option value="DNN">神经网络模型</option>
+                    </select>
+                        <br><br>
+                        <input type="button" value="识别" id=logic_pred_button>
+                        <br>
+                        <div id=logic_result></div>
+
+                    </form>
+
+
+                    <script>
+
+                        function uploadFile2() {
+                            var fileobj = $("#img")[0].files[0];
+                            console.log(fileobj);
+                            var form = new FormData();
+                            form.append("csrfmiddlewaretoken", '{{csrf_token}}');
+                            form.append("img", fileobj);
+                            form.append("pca", $("#pca").val());
+                            //csrfmiddlewaretoken:'{{csrf_token}}',
+
+                            $.ajax({
+                                type: 'POST',
+                                url: 'upload/',
+                                data: form,
+                                processData: false, //告诉jquery要传输data对象
+                                contentType: false,   //告诉jquery不需要增加请求头对于contentType的设置
+                                success: function (arg) {
+                                    console.log(arg)
+                                    img_tag = "<img src=" + arg.file_path_url + ">";
+                                    $("#face_img").html(img_tag);
+                                    $("#file_path").val(arg.file_path);
+                                }
+                            })
+                        }
+                    </script>
+                </div>
+            </div>
+
+    </div>
+    </body>
+
+
+{% endblock %}

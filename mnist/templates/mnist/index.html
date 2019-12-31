@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block bbb %}
+    <style>
+        #irisdiv {
+            margin: 50px auto;
+            width: 700px;
+        }
+
+        #linear_pred {
+            margin-top: 50px;
+            margin-bottom: 50px
+        }
+
+        #logic_pred {
+            margin-top: 50px;
+            margin-bottom: 50px
+        }
+    </style>
+    <script>
+
+        $(function () {
+
+
+            $("#logic_pred_button").click(function () {
+                var file_path = $("#file_path").val();
+
+
+                var logic_select = $("#logic_select").val();
+                $.post("pred/",
+                    {
+                        csrfmiddlewaretoken: '{{csrf_token}}',
+                        file_path: file_path,
+                        logic_select: logic_select,
+
+                    },
+                    function (data, status) {
+                        $("#logic_result").html(data.msg + "<br>" + data.acc)//text()
+                    }
+                );
+
+            });
+
+
+        })
+    </script>
+    <body>
+    <div id=irisdiv>
+        <center><h1>数字图像识别系统</h1></center>
+        <form action="#" method="get">
+            <div id=linear_pred>
+                <div id=face_img>
+
+                </div>
+                <div>
+                    <form method="post" action="/upload/" enctype="multipart/form-data">
+                        <br><input type="hidden" name="file_path" id="file_path">
+                        <br><input id='img' type="file" name="img"/>
+                        <br><br>
+                        <input type="button" value="图像上传" onclick="uploadFile2();">
+
+
+                        <br><br><label for="logic_select">选择神经网络算法</label>
+                        <br><select name="logic_select" id="logic_select">
+                        <option value="DNN_Keras">单层神经网络</option>
+                        <option value="MLP_Keras">MLP</option>
+                        <option value="DNN_Tensorflow">Tensorflow</option>
+
+                    </select>
+                        <br><br>
+                        <input type="button" value="识别" id=logic_pred_button>
+                        <br>
+                        <div id=logic_result></div>
+
+                    </form>
+
+
+                    <script>
+
+                        function uploadFile2() {
+                            var fileobj = $("#img")[0].files[0];
+                            console.log(fileobj);
+                            var form = new FormData();
+                            form.append("csrfmiddlewaretoken", '{{csrf_token}}');
+                            form.append("img", fileobj);
+
+                            //csrfmiddlewaretoken:'{{csrf_token}}',
+
+                            $.ajax({
+                                type: 'POST',
+                                url: 'upload/',
+                                data: form,
+                                processData: false, //告诉jquery要传输data对象
+                                contentType: false,   //告诉jquery不需要增加请求头对于contentType的设置
+                                success: function (arg) {
+                                    console.log(arg)
+                                    img_tag = "<img src=" + arg.file_path_url + ">";
+                                    $("#face_img").html(img_tag);
+                                    $("#file_path").val(arg.file_path);
+                                }
+                            })
+                        }
+                    </script>
+                </div>
+            </div>
+
+    </div>
+    </body>
+{% endblock %}
+
+
